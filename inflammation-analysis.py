@@ -7,6 +7,8 @@ import os
 from inflammation import models, views
 from inflammation.compute_data import analyse_data
 
+from inflammation.csvdatasource import CSVDataSource
+from inflammation.jsondatasource import JSONDataSource
 
 def main(args):
     """The MVC Controller of the patient inflammation data system.
@@ -20,21 +22,19 @@ def main(args):
         in_files = [args.in_files]
 
     if args.full_data_analysis:
-        analyse_data(os.path.dirname(in_files[0]))
-        return
-
-    for filename in in_files:
-        inflammation_data = models.load_csv(filename)
-
-        # Using hanging indent with the, closing '}' aligned with the start of
-        # the multiline contruct
-        view_data = {
-            'average': models.daily_mean(inflammation_data),
-            'max': models.daily_max(inflammation_data),
-            'min': models.daily_min(inflammation_data)
+        _, extension = os.path.splitext(in_files[0])
+        if extension == '.json':
+            data_source = JSONDataSource(os.path.dirname(in_files[0]))
+        elif extension == '.csv':
+            data_source = CSVDataSource(os.path.dirname(in_files[0]))
+        else:
+            raise ValueError(f'Unsupported file format: {extension}')
+        data_result = analyse_data(data_source)
+        graph_data = {
+            'standard deviation by day': data_result,
         }
-
-        views.visualize(view_data)
+        views.visualize(graph_data)
+        return
 
 
 if __name__ == "__main__":

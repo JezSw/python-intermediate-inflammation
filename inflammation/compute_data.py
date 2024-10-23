@@ -17,10 +17,7 @@ def compute_standard_deviation_by_day(data):
 def analyse_data_from_data_source(data_source):
     data = data_source.load_inflammation_data()
     daily_standard_deviation = compute_standard_deviation_by_day(data)
-    graph_data = {
-        "standard deviation by day": daily_standard_deviation,
-    }
-    return graph_data
+    return daily_standard_deviation
 
 
 def analyse_data(data_dir):
@@ -29,4 +26,4 @@ def analyse_data(data_dir):
     Gets all the inflammation csvs within a directory, works out the mean
     inflammation value for each day across all datasets, then graphs the
     standard deviation of these means."""
-    return analyse_data_from_data_source(CSVDataSource(data_dir))
+    return analyse_data_from_data_source(data_dir)
