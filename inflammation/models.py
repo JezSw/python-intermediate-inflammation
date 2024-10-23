@@ -31,7 +31,7 @@ def load_json(filename):
         }
     ]
 
-    :param filename: Filename of CSV to load
+    :param filename: Filename of JSON to load
 
     """
     with open(filename, 'r', encoding='utf-8') as file:
